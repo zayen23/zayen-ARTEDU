@@ -1,17 +1,133 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>{% block title %}ARTEDU - Dashboard{% endblock %}</title>
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    <!-- Favicon SVG (valide) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'><text y='1.2em' font-size='96'>🎨</text></svg>">
+
+    <!-- Styles -->
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    {% block stylesheets %}{% endblock %}
+
+    <style>
+        /* Sidebar moderne */
+        .modern-sidenav {
+            width: 250px;
+            transition: transform 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: 1030;
+        }
+        body.sb-sidenav-toggled #layoutSidenav_nav {
+            transform: translateX(-250px);
+        }
+        @media (min-width: 992px) {
+            body.sb-sidenav-toggled #layoutSidenav_content {
+                margin-left: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body class="sb-nav-fixed">
+
+    {# === NAVBAR & SIDEBAR === #}
+    {% if hide_navbar is not defined or not hide_navbar %}
+        {% include 'partials/_navbar.html.twig' %}
+        <div id="layoutSidenav">
+            {% include 'partials/_sidebar.html.twig' %}
+    {% else %}
+        <div id="layoutSidenav">
+    {% endif %}
+
+        <div id="layoutSidenav_content">
+            <main>
+                <!-- Flash Messages -->
+                <div class="container-fluid px-4 mt-3">
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle"></i> {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i> {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {% block body %}{% endblock %}
+            </main>
+
+            {% include 'partials/_footer.html.twig' %}
+        </div>
+    </div>
+
+    {# === SCRIPTS === #}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/scripts.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/datatables-simple-demo.js') }}"></script>
+
+    <script>
+        // Toggle sidebar
+        document.addEventListener('DOMContentLoaded', function () {
+            // Toggle depuis la navbar
+            const navbarSidebarToggle = document.getElementById('navbarSidebarToggle');
+            if (navbarSidebarToggle) {
+                navbarSidebarToggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.body.classList.toggle('sb-sidenav-toggled');
+                    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+                });
+            }
+
+            // Toggle depuis la sidebar
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.body.classList.toggle('sb-sidenav-toggled');
+                    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+                });
+            }
+
+            // Restore sidebar state
+            if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
+                document.body.classList.add('sb-sidenav-toggled');
+            }
+
+            // Gérer l'état actif du menu Sponsoring
+            const currentPath = window.location.pathname;
+            const sponsoringLinks = ['/sponsor', '/sponsor/contract', '/sponsorship'];
+            const isSponsoringPage = sponsoringLinks.some(path => currentPath.startsWith(path));
+            
+            if (isSponsoringPage) {
+                const collapseSponsoring = document.getElementById('collapseSponsoring');
+                if (collapseSponsoring) {
+                    collapseSponsoring.classList.add('show');
+                    const sponsoringLink = document.querySelector('[data-bs-target="#collapseSponsoring"]');
+                    if (sponsoringLink) {
+                        sponsoringLink.classList.remove('collapsed');
+                        sponsoringLink.setAttribute('aria-expanded', 'true');
+                    }
+                }
+            }
+        });
+    </script>
+
+    {% block javascripts %}{% endblock %}
+</body>
 </html>
