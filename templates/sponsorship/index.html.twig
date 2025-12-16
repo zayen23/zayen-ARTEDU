@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Parrainages{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-2"><i class="bi bi-handshake"></i> Liste des Parrainages</h1>
+            <p class="text-muted">Gérez tous vos parrainages</p>
+        </div>
+        <a href="{{ path('app_sponsorship_new') }}" class="btn btn-info btn-lg">
+            <i class="bi bi-plus-circle"></i> Nouveau Parrainage
+        </a>
+    </div>
+
+    {% if sponsorships|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Description</th>
+                        <th>Sponsor</th>
+                        <th>Type</th>
+                        <th>Type de parrainage</th>
+                        <th>Montant</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for sponsorship in sponsorships %}
+                    <tr>
+                        <td>{{ sponsorship.description|slice(0, 50) }}{% if sponsorship.description|length > 50 %}...{% endif %}</td>
+                        <td><strong>{{ sponsorship.sponsor.name }}</strong></td>
+                        <td><span class="badge bg-secondary">{{ sponsorship.type.value }}</span></td>
+                        <td><span class="badge bg-primary">{{ sponsorship.sponsorshipType.value }}</span></td>
+                        <td><strong class="text-success">{{ sponsorship.amount|number_format(2, ',', ' ') }} €</strong></td>
+                        <td class="text-end">
+                            <a href="{{ path('app_sponsorship_show', {'id': sponsorship.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                            <a href="{{ path('app_sponsorship_edit', {'id': sponsorship.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <p class="mb-0">Aucun parrainage trouvé. <a href="{{ path('app_sponsorship_new') }}">Créer le premier parrainage</a></p>
+        </div>
+    {% endif %}
+{% endblock %}

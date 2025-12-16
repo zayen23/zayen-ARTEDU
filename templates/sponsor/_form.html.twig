@@ -1,0 +1,105 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true, 'id': 'sponsor-form'}}) }}
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.name, {'attr': {'class': 'form-control', 'oninput': 'this.value = this.value.replace(/[0-9]/g, "")'}}) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.email, {'attr': {'class': 'form-control', 'pattern': '.*@.*\\.(com|tn|fr|net|org)$'}}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.phone, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.type, {'attr': {'class': 'form-select'}}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.website, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.logoFile, {'attr': {'class': 'form-control'}}) }}
+            {% if sponsor.logo %}
+                <div class="mt-2">
+                    <small class="text-muted">Logo actuel :</small><br>
+                    <img src="{{ asset('uploads/sponsors/' ~ sponsor.logo) }}" alt="Logo {{ sponsor.name }}" style="max-height: 100px; max-width: 200px;" class="mt-2">
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+        <a href="{{ path('app_sponsor_index') }}" class="btn btn-secondary">Annuler</a>
+    </div>
+{{ form_end(form) }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('sponsor-form');
+    if (!form) return;
+    
+    // Trouver le champ nom (peut avoir différents noms selon le contexte)
+    const nameInput = form.querySelector('input[type="text"]') || 
+                     form.querySelector('input[name*="[name]"]') ||
+                     Array.from(form.querySelectorAll('input')).find(input => 
+                         input.getAttribute('name') && input.getAttribute('name').includes('name')
+                     );
+    
+    // Trouver le champ email
+    const emailInput = form.querySelector('input[type="email"]') ||
+                      form.querySelector('input[name*="[email]"]') ||
+                      Array.from(form.querySelectorAll('input')).find(input => 
+                          input.getAttribute('type') === 'email' || 
+                          (input.getAttribute('name') && input.getAttribute('name').includes('email'))
+                      );
+    
+    // Empêcher la saisie de nombres dans le champ nom
+    if (nameInput) {
+        nameInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[0-9]/g, '');
+        });
+        
+        nameInput.addEventListener('keypress', function(e) {
+            if (e.key >= '0' && e.key <= '9') {
+                e.preventDefault();
+            }
+        });
+    }
+    
+    // Validation de l'email
+    if (emailInput) {
+        emailInput.addEventListener('blur', function() {
+            const email = this.value;
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|tn|fr|net|org)$/i;
+            if (email && !emailPattern.test(email)) {
+                this.setCustomValidity('L\'email doit être valide et se terminer par .com, .tn, .fr, .net ou .org');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    }
+    
+    // Validation du téléphone
+    const phoneInput = form.querySelector('input[type="tel"]') ||
+                      form.querySelector('input[name*="[phone]"]');
+    
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            // Nettoyer le champ (garder seulement chiffres, +, -, espaces, parenthèses)
+            this.value = this.value.replace(/[^0-9+\-\s()]/g, '');
+        });
+        
+        phoneInput.addEventListener('blur', function() {
+            const phone = this.value.replace(/\s/g, '');
+            if (phone && (phone.length < 8 || phone.length > 20)) {
+                this.setCustomValidity('Le téléphone doit contenir entre 8 et 20 caractères');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    }
+});
+</script>

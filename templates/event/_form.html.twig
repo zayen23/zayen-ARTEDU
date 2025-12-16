@@ -1,0 +1,35 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            {{ form_row(form.title, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.startDate, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.endDate, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            {{ form_row(form.location, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+    <div class="mb-3">
+        {{ form_row(form.description, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_row(form.sponsors, {'attr': {'class': 'form-select'}}) }}
+        <small class="form-text text-muted">Sélectionnez les sponsors associés à cet événement (maintenez Ctrl/Cmd pour sélectionner plusieurs)</small>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+        <a href="{{ path('app_event_index') }}" class="btn btn-secondary">Annuler</a>
+    </div>
+{{ form_end(form) }}
+
+
+

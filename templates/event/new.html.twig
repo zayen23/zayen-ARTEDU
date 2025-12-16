@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel Événement{% endblock %}
+
+{% block body %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Créer un nouvel événement</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('app_event_index') }}">Événements</a></li>
+        <li class="breadcrumb-item active">Nouveau</li>
+    </ol>
+
+    <div class="card">
+        <div class="card-body">
+            {{ include('event/_form.html.twig') }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+

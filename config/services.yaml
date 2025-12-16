@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    env(ADMIN_PHONE): ''
 
 services:
     # default configuration for services in *this* file
@@ -28,3 +29,10 @@ services:
         arguments:
             $targetDirectory: '%kernel.project_dir%/public/uploads/sponsors'
             $slugger: '@slugger'
+
+    # Service de notification pour les contrats expirant
+    App\Service\ContractNotificationService:
+        arguments:
+            $adminEmail: '%env(ADMIN_EMAIL)%'
+            $adminPhone: '%env(ADMIN_PHONE)%'
+            $adminName: '%env(ADMIN_NAME)%'

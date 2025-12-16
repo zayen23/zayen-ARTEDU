@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Contrats de Sponsoring{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-2"><i class="bi bi-file-earmark-text"></i> Liste des Contrats</h1>
+            <p class="text-muted">Gérez tous vos contrats de sponsoring</p>
+        </div>
+        <a href="{{ path('app_sponsor_contract_new') }}" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle"></i> Nouveau Contrat
+        </a>
+    </div>
+
+    {% if sponsor_contracts|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Numéro de contrat</th>
+                        <th>Date de signature</th>
+                        <th>Date d'expiration</th>
+                        <th>Niveau</th>
+                        <th>Sponsor</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for sponsor_contract in sponsor_contracts %}
+                    <tr>
+                        <td><strong>{{ sponsor_contract.contractNumber }}</strong></td>
+                        <td>{{ sponsor_contract.signedAt ? sponsor_contract.signedAt|date('d/m/Y') : '' }}</td>
+                        <td>{{ sponsor_contract.expiresAt ? sponsor_contract.expiresAt|date('d/m/Y') : '' }}</td>
+                        <td>
+                            {% set levelColors = {
+                                'BRONZE': 'bg-secondary',
+                                'SILVER': 'bg-light text-dark',
+                                'GOLD': 'bg-warning',
+                                'PLATINUM': 'bg-info'
+                            } %}
+                            <span class="badge {{ levelColors[sponsor_contract.level.value] ?? 'bg-secondary' }}">{{ sponsor_contract.level.value }}</span>
+                        </td>
+                        <td>{{ sponsor_contract.sponsor.name }}</td>
+                        <td class="text-end">
+                            <a href="{{ path('app_sponsor_contract_show', {'id': sponsor_contract.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                            <a href="{{ path('app_sponsor_contract_edit', {'id': sponsor_contract.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <p class="mb-0">Aucun contrat trouvé. <a href="{{ path('app_sponsor_contract_new') }}">Créer le premier contrat</a></p>
+        </div>
+    {% endif %}
+{% endblock %}

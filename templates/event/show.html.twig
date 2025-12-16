@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.title }} - ARTEDU{% endblock %}
+
+{% block body %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">{{ event.title }}</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('app_event_index') }}">Événements</a></li>
+        <li class="breadcrumb-item active">{{ event.title }}</li>
+    </ol>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Détails de l'événement</h5>
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <th width="200">Titre</th>
+                                <td><strong>{{ event.title }}</strong></td>
+                            </tr>
+                            {% if event.description %}
+                            <tr>
+                                <th>Description</th>
+                                <td>{{ event.description|nl2br }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <th>Date de début</th>
+                                <td><i class="fas fa-calendar"></i> {{ event.startDate|date('d/m/Y à H:i') }}</td>
+                            </tr>
+                            {% if event.endDate %}
+                            <tr>
+                                <th>Date de fin</th>
+                                <td><i class="fas fa-calendar"></i> {{ event.endDate|date('d/m/Y à H:i') }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if event.location %}
+                            <tr>
+                                <th>Lieu</th>
+                                <td><i class="fas fa-map-marker-alt"></i> {{ event.location }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-handshake"></i> Sponsors</h5>
+                </div>
+                <div class="card-body">
+                    {% if event.sponsors|length > 0 %}
+                        <div class="sponsors-list">
+                            {% for sponsor in event.sponsors %}
+                                <div class="sponsor-item mb-3 p-3 border rounded">
+                                    {% if sponsor.logo %}
+                                        <div class="text-center mb-2">
+                                            <img src="{{ asset('uploads/sponsors/' ~ sponsor.logo) }}" 
+                                                 alt="Logo {{ sponsor.name }}" 
+                                                 class="img-fluid" 
+                                                 style="max-height: 80px; max-width: 150px;">
+                                        </div>
+                                    {% endif %}
+                                    <h6 class="mb-1"><strong>{{ sponsor.name }}</strong></h6>
+                                    <p class="mb-1 text-muted small">{{ sponsor.type.value }}</p>
+                                    {% if sponsor.website %}
+                                        <a href="{{ sponsor.website }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-external-link-alt"></i> Site web
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">Aucun sponsor associé à cet événement.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Footer avec logos des sponsors #}
+{% if event.sponsors|length > 0 %}
+<div class="sponsors-footer bg-light py-4 mt-5 border-top">
+    <div class="container-fluid px-4">
+        <div class="text-center mb-3">
+            <h6 class="text-muted">Nos partenaires</h6>
+        </div>
+        <div class="row align-items-center justify-content-center">
+            {% for sponsor in event.sponsors %}
+                <div class="col-auto mb-3">
+                    {% if sponsor.logo %}
+                        <div class="sponsor-logo-footer">
+                            {% if sponsor.website %}
+                                <a href="{{ sponsor.website }}" target="_blank" rel="noopener noreferrer" title="{{ sponsor.name }}">
+                                    <img src="{{ asset('uploads/sponsors/' ~ sponsor.logo) }}" 
+                                         alt="Logo {{ sponsor.name }}" 
+                                         class="img-fluid" 
+                                         style="max-height: 60px; max-width: 120px; filter: grayscale(20%); transition: all 0.3s ease;">
+                                </a>
+                            {% else %}
+                                <img src="{{ asset('uploads/sponsors/' ~ sponsor.logo) }}" 
+                                     alt="Logo {{ sponsor.name }}" 
+                                     class="img-fluid" 
+                                     style="max-height: 60px; max-width: 120px; filter: grayscale(20%);">
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
