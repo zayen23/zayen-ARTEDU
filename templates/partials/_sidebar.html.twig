@@ -20,24 +20,44 @@
         </div>
         
         <div class="nav-item">
-            <a class="nav-link {% if app.request.attributes.get('_route') starts with 'app_event' %}active{% endif %}" href="{{ path('app_event_index') }}">
+            <a class="nav-link toggle-events {% if app.request.attributes.get('_route') == 'app_event_dashboard' or app.request.attributes.get('_route') starts with 'app_event' %}active{% endif %}" href="{{ path('app_event_dashboard') }}" id="eventsLink">
                 <i class="fas fa-calendar"></i>
                 <span>Événements</span>
+                <i class="fas fa-chevron-down ms-auto toggle-icon" id="eventsToggle" style="font-size: 12px; transition: transform 0.3s; pointer-events: auto;" onclick="event.stopPropagation(); event.preventDefault(); toggleEventsActions();"></i>
             </a>
+            <!-- Actions rapides sous Événements -->
+            <div class="sidebar-quick-actions" id="eventsActions" style="display: none;">
+                <a href="{{ path('app_event_new') }}" class="quick-action-btn btn-event">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>Créer un Événement</span>
+                </a>
+                <a href="{{ path('app_event_review_new') }}" class="quick-action-btn btn-review">
+                    <i class="fas fa-star"></i>
+                    <span>Créer un Avis</span>
+                </a>
+            </div>
         </div>
         
         <div class="nav-item">
-            <a class="nav-link" href="javascript:void(0);">
+            <a class="nav-link toggle-ventes {% if app.request.attributes.get('_route') == 'app_ventes' or app.request.attributes.get('_route') starts with 'app_ticket' %}active{% endif %}" href="{{ path('app_ventes') }}" id="ventesLink">
                 <i class="fas fa-shopping-cart"></i>
                 <span>Ventes</span>
+                <i class="fas fa-chevron-down ms-auto toggle-icon" id="ventesToggle" style="font-size: 12px; transition: transform 0.3s; pointer-events: auto;" onclick="event.stopPropagation(); event.preventDefault(); toggleVentesActions();"></i>
             </a>
+            <!-- Actions rapides sous Ventes -->
+            <div class="sidebar-quick-actions" id="ventesActions" style="display: none;">
+                <a href="{{ path('app_ticket_new') }}" class="quick-action-btn btn-ticket">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Créer un Ticket</span>
+                </a>
+            </div>
         </div>
         
         <div class="nav-item">
-            <a class="nav-link toggle-sponsoring {% if app.request.attributes.get('_route') starts with 'app_sponsoring' or app.request.attributes.get('_route') starts with 'app_sponsor' or app.request.attributes.get('_route') starts with 'app_sponsor_contract' or app.request.attributes.get('_route') starts with 'app_sponsorship' %}active{% endif %}" href="javascript:void(0);" id="sponsoringToggle">
+            <a class="nav-link toggle-sponsoring {% if app.request.attributes.get('_route') == 'app_sponsoring' or app.request.attributes.get('_route') starts with 'app_sponsor' or app.request.attributes.get('_route') starts with 'app_sponsor_contract' or app.request.attributes.get('_route') starts with 'app_sponsorship' %}active{% endif %}" href="{{ path('app_sponsoring') }}" id="sponsoringLink">
                 <i class="fas fa-handshake"></i>
                 <span>Sponsoring</span>
-                <i class="fas fa-chevron-down ms-auto toggle-icon" style="font-size: 12px; transition: transform 0.3s;"></i>
+                <i class="fas fa-chevron-down ms-auto toggle-icon" id="sponsoringToggle" style="font-size: 12px; transition: transform 0.3s; pointer-events: auto;" onclick="event.stopPropagation(); event.preventDefault(); toggleSponsoringActions();"></i>
             </a>
             <!-- Actions rapides sous Sponsoring -->
             <div class="sidebar-quick-actions" id="sponsoringActions" style="display: none;">

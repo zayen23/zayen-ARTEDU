@@ -1,23 +1,263 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouvel Événement{% endblock %}
+{% block title %}{{ event.id ? 'Modifier' : 'Créer' }} un événement{% endblock %}
 
-{% block body %}
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Créer un nouvel événement</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-        <li class="breadcrumb-item"><a href="{{ path('app_event_index') }}">Événements</a></li>
-        <li class="breadcrumb-item active">Nouveau</li>
-    </ol>
-
-    <div class="card">
-        <div class="card-body">
-            {{ include('event/_form.html.twig') }}
-        </div>
-    </div>
-</div>
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
 {% endblock %}
 
+{% block body %}
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-calendar-plus"></i>
+                {{ event.id ? 'Modifier' : 'Créer' }} un événement
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_event_admin_index') }}">Événements</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ event.id ? 'Modifier' : 'Créer' }}</li>
+                </ol>
+            </nav>
+        </div>
+        <a href="{{ path('app_event_admin_index') }}" class="btn btn-reset">
+            <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+        </a>
+    </div>
+</div>
 
+<div class="stat-card">
+            <h5 class="mb-4"><i class="fas fa-calendar-plus"></i> Informations de l'événement</h5>
+            <div>
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.title, {
+                        'attr': {'class': 'form-control', 'placeholder': 'Titre de l\'événement'},
+                        'label': 'Titre',
+                        'label_attr': {'class': 'form-label fw-bold'}
+                    }) }}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.type, {
+                        'attr': {'class': 'form-control'},
+                        'label': 'Type d\'événement',
+                        'label_attr': {'class': 'form-label fw-bold'}
+                    }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    {{ form_row(form.description, {
+                        'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Description détaillée de l\'événement'},
+                        'label': 'Description',
+                        'label_attr': {'class': 'form-label fw-bold'}
+                    }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.startDate, {
+                        'attr': {'class': 'form-control'},
+                        'label': 'Date et heure de début',
+                        'label_attr': {'class': 'form-label fw-bold'}
+                    }) }}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.endDate, {
+                        'attr': {'class': 'form-control'},
+                        'label': 'Date et heure de fin',
+                        'label_attr': {'class': 'form-label fw-bold'}
+                    }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.location, {
+                        'attr': {'class': 'form-control', 'placeholder': 'Lieu de l\'événement'},
+                        'label': 'Lieu',
+                        'label_attr': {'class': 'form-label fw-bold'}
+                    }) }}
+                    
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="form-label fw-bold">Géolocalisation</label>
+                    <div class="input-group mb-2">
+                        <input type="text" id="address-search" class="form-control" placeholder="Rechercher une adresse (ex: 10 rue de la Paix, Paris)...">
+                        <button class="btn btn-primary" type="button" id="btn-search"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div id="map" style="height: 400px; width: 100%; border-radius: 0.5rem; border: 1px solid #ced4da;"></div>
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> Recherchez une adresse ou cliquez sur la carte pour définir le lieu. Le champ adresse se remplira automatiquement.</small>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    {{ form_row(form.capacity, {
+                        'attr': {'class': 'form-control', 'min': '1'},
+                        'label': 'Capacité',
+                        'label_attr': {'class': 'form-label fw-bold'}
+                    }) }}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    {{ form_row(form.price, {
+                        'attr': {'class': 'form-control', 'step': '0.01', 'min': '0', 'placeholder': '0.00'},
+                        'label': 'Prix (€)',
+                        'label_attr': {'class': 'form-label fw-bold'}
+                    }) }}
+                </div>
+            </div>
+
+
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <a href="{{ path('app_event_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Annuler
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> {{ event.id ? 'Mettre à jour' : 'Créer l\'événement' }}
+                </button>
+            </div>
+            
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // IDs des champs Symfony (vérifier si besoin, standard = event_*)
+            const latInput = document.getElementById('event_latitude');
+            const lonInput = document.getElementById('event_longitude');
+            const addressInput = document.getElementById('event_location'); // Champ texte visible
+            const searchInput = document.getElementById('address-search');
+            const searchBtn = document.getElementById('btn-search');
+            
+            // Coordonnées par défaut (Paris) ou celles existantes
+            let defaultLat = 48.8566;
+            let defaultLon = 2.3522;
+            let zoomLevel = 13;
+
+            if (latInput.value && lonInput.value) {
+                defaultLat = parseFloat(latInput.value);
+                defaultLon = parseFloat(lonInput.value);
+                zoomLevel = 16;
+            }
+
+            const map = L.map('map').setView([defaultLat, defaultLon], zoomLevel);
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            let marker = null;
+
+            if (latInput.value && lonInput.value) {
+                marker = L.marker([defaultLat, defaultLon]).addTo(map);
+            }
+
+            // Fonction pour mettre à jour la carte et les inputs
+            function updateLocation(lat, lon, address = null) {
+                // Update inputs
+                latInput.value = lat;
+                lonInput.value = lon;
+                
+                // Update marker
+                if (marker) {
+                    marker.setLatLng([lat, lon]);
+                } else {
+                    marker = L.marker([lat, lon]).addTo(map);
+                }
+                
+                // Center map
+                map.flyTo([lat, lon], 16);
+
+                // Update address field if provided
+                if (address) {
+                    addressInput.value = address;
+                }
+            }
+
+            // Click sur la carte -> Reverse Geocoding
+            map.on('click', function(e) {
+                const lat = e.latlng.lat;
+                const lon = e.latlng.lng;
+
+                // Optimistic UI update for marker
+                updateLocation(lat, lon);
+
+                // Call Reverse API
+                fetch(`/api/geo/reverse?lat=${lat}&lon=${lon}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.display_name) {
+                            addressInput.value = data.display_name;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching address:', error);
+                        // Fallback: ne rien faire sur l'input adresse pour ne pas écraser une saisie manuelle
+                    });
+            });
+
+            // Recherche adresse
+            function searchAddress() {
+                const query = searchInput.value;
+                if (query.length < 3) return;
+
+                searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                fetch(`/api/geo/search?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        searchBtn.innerHTML = '<i class="fas fa-search"></i>';
+                        if (data && data.length > 0) {
+                            // Prend le premier résultat
+                            const result = data[0];
+                            const lat = parseFloat(result.lat);
+                            const lon = parseFloat(result.lon);
+                            
+                            updateLocation(lat, lon, result.label);
+                        } else {
+                            alert('Adresse non trouvée');
+                        }
+                    })
+                    .catch(error => {
+                        searchBtn.innerHTML = '<i class="fas fa-search"></i>';
+                        console.error('Error searching address:', error);
+                    });
+            }
+
+            searchBtn.addEventListener('click', searchAddress);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Eviter submit form
+                    searchAddress();
+                }
+            });
+        });
+    </script>
+{% endblock %}
 

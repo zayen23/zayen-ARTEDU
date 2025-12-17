@@ -1,124 +1,134 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ event.title }} - ARTEDU{% endblock %}
+{% block title %}{{ event.title }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid px-4">
-    <h1 class="mt-4">{{ event.title }}</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-        <li class="breadcrumb-item"><a href="{{ path('app_event_index') }}">Événements</a></li>
-        <li class="breadcrumb-item active">{{ event.title }}</li>
-    </ol>
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-calendar"></i>
+                {{ event.title }}
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_event_index') }}">Événements</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Détails</li>
+                </ol>
+            </nav>
+        </div>
+        <a href="{{ path('app_event_index') }}" class="btn btn-reset">
+            <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+        </a>
+    </div>
+</div>
 
+<div class="container-fluid">
     <div class="row">
-        <div class="col-lg-8">
-            <div class="card mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="card-title">{{ event.title }}</h1>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">Détails de l'événement</h5>
-                    <table class="table table-borderless">
-                        <tbody>
-                            <tr>
-                                <th width="200">Titre</th>
-                                <td><strong>{{ event.title }}</strong></td>
-                            </tr>
-                            {% if event.description %}
-                            <tr>
-                                <th>Description</th>
-                                <td>{{ event.description|nl2br }}</td>
-                            </tr>
-                            {% endif %}
-                            <tr>
-                                <th>Date de début</th>
-                                <td><i class="fas fa-calendar"></i> {{ event.startDate|date('d/m/Y à H:i') }}</td>
-                            </tr>
-                            {% if event.endDate %}
-                            <tr>
-                                <th>Date de fin</th>
-                                <td><i class="fas fa-calendar"></i> {{ event.endDate|date('d/m/Y à H:i') }}</td>
-                            </tr>
-                            {% endif %}
-                            {% if event.location %}
-                            <tr>
-                                <th>Lieu</th>
-                                <td><i class="fas fa-map-marker-alt"></i> {{ event.location }}</td>
-                            </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
+                    <p class="lead">{{ event.description }}</p>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Dates</h5>
+                            <p>{{ event.startDate|date('d/m/Y H:i') }} - {{ event.endDate|date('d/m/Y H:i') }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Lieu</h5>
+                            <p>{{ event.location }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Type</h5>
+                            <p><span class="badge badge-info">{{ event.type }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Prix</h5>
+                            <p>{{ event.price ? event.price ~ ' €' : 'Gratuit' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Capacité</h5>
+                            <p>{{ event.capacity }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Places restantes</h5>
+                            <p>{{ event.capacity - event.ticketsSold }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-handshake"></i> Sponsors</h5>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Acheter des billets</h5>
                 </div>
                 <div class="card-body">
-                    {% if event.sponsors|length > 0 %}
-                        <div class="sponsors-list">
-                            {% for sponsor in event.sponsors %}
-                                <div class="sponsor-item mb-3 p-3 border rounded">
-                                    {% if sponsor.logo %}
-                                        <div class="text-center mb-2">
-                                            <img src="{{ asset('uploads/sponsors/' ~ sponsor.logo) }}" 
-                                                 alt="Logo {{ sponsor.name }}" 
-                                                 class="img-fluid" 
-                                                 style="max-height: 80px; max-width: 150px;">
-                                        </div>
-                                    {% endif %}
-                                    <h6 class="mb-1"><strong>{{ sponsor.name }}</strong></h6>
-                                    <p class="mb-1 text-muted small">{{ sponsor.type.value }}</p>
-                                    {% if sponsor.website %}
-                                        <a href="{{ sponsor.website }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-external-link-alt"></i> Site web
-                                        </a>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endfor %}
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% endfor %}
+
+                    {% set availableSeats = event.capacity - event.ticketsSold %}
+                    <form action="{{ path('app_ticket_purchase', {id: event.id})}}" method="post" id="ticketForm" onsubmit="return validateTicketForm({{ availableSeats }});" novalidate>
+                        <div class="form-group mb-3">
+                            <label for="buyer_name" class="form-label fw-bold">Nom <span class="text-danger">*</span></label>
+                            <input type="text" id="buyer_name" name="buyer_name" class="form-control" required
+                                   oninput="validateField(this)">
+                            <div class="invalid-feedback">Veuillez entrer votre nom.</div>
                         </div>
-                    {% else %}
-                        <p class="text-muted mb-0">Aucun sponsor associé à cet événement.</p>
-                    {% endif %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="buyer_email" class="form-label fw-bold">Email <span class="text-danger">*</span></label>
+                            <input type="email" id="buyer_email" name="buyer_email" class="form-control" required
+                                   oninput="validateEmail(this)">
+                            <div class="invalid-feedback">Veuillez entrer une adresse email valide.</div>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="quantity" class="form-label fw-bold">
+                                Nombre de billets <span class="text-danger">*</span>
+                                <small class="text-muted">(Places disponibles : {{ availableSeats }})</small>
+                            </label>
+                            <input type="number" id="quantity" name="quantity" 
+                                   class="form-control" 
+                                   min="1" 
+                                   max="{{ availableSeats }}" 
+                                   required
+                                   oninput="validateQuantity(this, {{ availableSeats }})">
+                            <div class="form-text">Nombre maximum de billets que vous pouvez acheter : {{ availableSeats }}</div>
+                            <div id="quantityError" class="invalid-feedback"></div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-ticket-alt me-2"></i> Acheter les billets
+                            </button>
+                        </div>
+                        
+                        <div class="mt-3 text-muted small">
+                            <span class="text-danger">*</span> Champs obligatoires
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-{# Footer avec logos des sponsors #}
-{% if event.sponsors|length > 0 %}
-<div class="sponsors-footer bg-light py-4 mt-5 border-top">
-    <div class="container-fluid px-4">
-        <div class="text-center mb-3">
-            <h6 class="text-muted">Nos partenaires</h6>
-        </div>
-        <div class="row align-items-center justify-content-center">
-            {% for sponsor in event.sponsors %}
-                <div class="col-auto mb-3">
-                    {% if sponsor.logo %}
-                        <div class="sponsor-logo-footer">
-                            {% if sponsor.website %}
-                                <a href="{{ sponsor.website }}" target="_blank" rel="noopener noreferrer" title="{{ sponsor.name }}">
-                                    <img src="{{ asset('uploads/sponsors/' ~ sponsor.logo) }}" 
-                                         alt="Logo {{ sponsor.name }}" 
-                                         class="img-fluid" 
-                                         style="max-height: 60px; max-width: 120px; filter: grayscale(20%); transition: all 0.3s ease;">
-                                </a>
-                            {% else %}
-                                <img src="{{ asset('uploads/sponsors/' ~ sponsor.logo) }}" 
-                                     alt="Logo {{ sponsor.name }}" 
-                                     class="img-fluid" 
-                                     style="max-height: 60px; max-width: 120px; filter: grayscale(20%);">
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-    </div>
 </div>
-{% endif %}
 {% endblock %}
 

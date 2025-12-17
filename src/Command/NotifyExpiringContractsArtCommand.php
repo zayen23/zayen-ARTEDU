@@ -157,3 +157,5 @@ class NotifyExpiringContractsArtCommand extends Command
     }
 }
 
+
+

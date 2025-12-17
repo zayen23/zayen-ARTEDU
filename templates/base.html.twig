@@ -87,39 +87,109 @@
                 }
             }
 
-            // Toggle Sponsoring actions
-            const sponsoringToggle = document.getElementById('sponsoringToggle');
-            const sponsoringActions = document.getElementById('sponsoringActions');
-            const toggleIcon = sponsoringToggle ? sponsoringToggle.querySelector('.toggle-icon') : null;
-            
-            if (sponsoringToggle && sponsoringActions) {
-                // Restore state from localStorage
-                const isOpen = localStorage.getItem('sponsoring-actions-open') === 'true';
-                if (isOpen) {
-                    sponsoringActions.style.display = 'block';
-                    if (toggleIcon) {
-                        toggleIcon.style.transform = 'rotate(180deg)';
-                    }
-                }
-
-                sponsoringToggle.addEventListener('click', function(e) {
-                    e.preventDefault();
+            // Toggle Sponsoring actions function
+            window.toggleSponsoringActions = function() {
+                const sponsoringToggleIcon = document.getElementById('sponsoringToggle');
+                const sponsoringActions = document.getElementById('sponsoringActions');
+                
+                if (sponsoringActions) {
                     const isCurrentlyOpen = sponsoringActions.style.display === 'block';
                     
                     if (isCurrentlyOpen) {
                         sponsoringActions.style.display = 'none';
-                        if (toggleIcon) {
-                            toggleIcon.style.transform = 'rotate(0deg)';
+                        if (sponsoringToggleIcon) {
+                            sponsoringToggleIcon.style.transform = 'rotate(0deg)';
                         }
                         localStorage.setItem('sponsoring-actions-open', 'false');
                     } else {
                         sponsoringActions.style.display = 'block';
-                        if (toggleIcon) {
-                            toggleIcon.style.transform = 'rotate(180deg)';
+                        if (sponsoringToggleIcon) {
+                            sponsoringToggleIcon.style.transform = 'rotate(180deg)';
                         }
                         localStorage.setItem('sponsoring-actions-open', 'true');
                     }
-                });
+                }
+            };
+            
+            // Restore Sponsoring actions state from localStorage
+            const sponsoringActions = document.getElementById('sponsoringActions');
+            const sponsoringToggleIcon = document.getElementById('sponsoringToggle');
+            if (sponsoringActions && sponsoringToggleIcon) {
+                const isOpen = localStorage.getItem('sponsoring-actions-open') === 'true';
+                if (isOpen) {
+                    sponsoringActions.style.display = 'block';
+                    sponsoringToggleIcon.style.transform = 'rotate(180deg)';
+                }
+            }
+
+            // Toggle Events actions function
+            window.toggleEventsActions = function() {
+                const eventsToggleIcon = document.getElementById('eventsToggle');
+                const eventsActions = document.getElementById('eventsActions');
+                
+                if (eventsActions) {
+                    const isCurrentlyOpen = eventsActions.style.display === 'block';
+                    
+                    if (isCurrentlyOpen) {
+                        eventsActions.style.display = 'none';
+                        if (eventsToggleIcon) {
+                            eventsToggleIcon.style.transform = 'rotate(0deg)';
+                        }
+                        localStorage.setItem('events-actions-open', 'false');
+                    } else {
+                        eventsActions.style.display = 'block';
+                        if (eventsToggleIcon) {
+                            eventsToggleIcon.style.transform = 'rotate(180deg)';
+                        }
+                        localStorage.setItem('events-actions-open', 'true');
+                    }
+                }
+            };
+            
+            // Restore Events actions state from localStorage
+            const eventsActions = document.getElementById('eventsActions');
+            const eventsToggleIcon = document.getElementById('eventsToggle');
+            if (eventsActions && eventsToggleIcon) {
+                const isOpen = localStorage.getItem('events-actions-open') === 'true';
+                if (isOpen) {
+                    eventsActions.style.display = 'block';
+                    eventsToggleIcon.style.transform = 'rotate(180deg)';
+                }
+            }
+
+            // Toggle Ventes actions function
+            window.toggleVentesActions = function() {
+                const ventesToggleIcon = document.getElementById('ventesToggle');
+                const ventesActions = document.getElementById('ventesActions');
+                
+                if (ventesActions) {
+                    const isCurrentlyOpen = ventesActions.style.display === 'block';
+                    
+                    if (isCurrentlyOpen) {
+                        ventesActions.style.display = 'none';
+                        if (ventesToggleIcon) {
+                            ventesToggleIcon.style.transform = 'rotate(0deg)';
+                        }
+                        localStorage.setItem('ventes-actions-open', 'false');
+                    } else {
+                        ventesActions.style.display = 'block';
+                        if (ventesToggleIcon) {
+                            ventesToggleIcon.style.transform = 'rotate(180deg)';
+                        }
+                        localStorage.setItem('ventes-actions-open', 'true');
+                    }
+                }
+            };
+            
+            // Restore Ventes actions state from localStorage
+            const ventesActions = document.getElementById('ventesActions');
+            const ventesToggleIcon = document.getElementById('ventesToggle');
+            if (ventesActions && ventesToggleIcon) {
+                const isOpen = localStorage.getItem('ventes-actions-open') === 'true';
+                if (isOpen) {
+                    ventesActions.style.display = 'block';
+                    ventesToggleIcon.style.transform = 'rotate(180deg)';
+                }
             }
         });
     </script>

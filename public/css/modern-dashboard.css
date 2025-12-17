@@ -314,6 +314,36 @@ body.sidebar-collapsed .modern-sidebar {
     transform: translateX(4px);
 }
 
+.modern-sidebar .quick-action-btn.btn-event {
+    background: #667eea;
+    color: white;
+}
+
+.modern-sidebar .quick-action-btn.btn-event:hover {
+    background: #5568d3;
+    transform: translateX(4px);
+}
+
+.modern-sidebar .quick-action-btn.btn-review {
+    background: #fbb034;
+    color: white;
+}
+
+.modern-sidebar .quick-action-btn.btn-review:hover {
+    background: #e99f20;
+    transform: translateX(4px);
+}
+
+.modern-sidebar .quick-action-btn.btn-ticket {
+    background: #11998e;
+    color: white;
+}
+
+.modern-sidebar .quick-action-btn.btn-ticket:hover {
+    background: #0f857a;
+    transform: translateX(4px);
+}
+
 /* Main Content */
 .main-content {
     margin-left: 260px;

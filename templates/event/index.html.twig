@@ -1,54 +1,215 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Événements{% endblock %}
+{% block title %}Gestion des Événements{% endblock %}
 
 {% block body %}
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Liste des Événements</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
-        <li class="breadcrumb-item active">Événements</li>
-    </ol>
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <p class="text-muted">Consultez tous les événements disponibles</p>
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-calendar"></i>
+                Gestion des Événements
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Événements</li>
+                </ol>
+            </nav>
+        </div>
+        <a href="{{ path('app_event_new') }}" class="btn btn-add">
+            <i class="fas fa-plus me-2"></i>Ajouter un événement
+        </a>
     </div>
+</div>
 
-    {% if events|length > 0 %}
-        <div class="row">
-            {% for event in events %}
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ event.title }}</h5>
-                            {% if event.description %}
-                                <p class="card-text text-muted">{{ event.description|slice(0, 100) }}{% if event.description|length > 100 %}...{% endif %}</p>
-                            {% endif %}
-                            <p class="card-text">
-                                <small class="text-muted">
-                                    <i class="fas fa-calendar"></i> {{ event.startDate|date('d/m/Y H:i') }}
-                                    {% if event.location %}
-                                        <br><i class="fas fa-map-marker-alt"></i> {{ event.location }}
-                                    {% endif %}
-                                </small>
-                            </p>
-                        </div>
-                        <div class="card-footer bg-transparent">
-                            <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-primary btn-sm">
-                                <i class="fas fa-eye"></i> Voir les détails
-                            </a>
-                        </div>
+<!-- Cartes statistiques Événements -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Événements à venir</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ upcoming_events|default(0) }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-calendar-clock fa-3x text-white" style="opacity: 0.3;"></i>
                     </div>
                 </div>
-            {% endfor %}
+                <a href="{{ path('app_event_index') }}" class="btn btn-sm text-white border-white border-2" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
         </div>
-    {% else %}
-        <div class="alert alert-info">
-            <p class="mb-0">Aucun événement trouvé.</p>
+    </div>
+
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Événements en cours</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ ongoing_events|default(0) }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-play-circle fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_event_index') }}" class="btn btn-sm text-white border-white border-2" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
         </div>
-    {% endif %}
+    </div>
+
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Événements terminés</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ past_events|default(0) }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-check-circle fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_event_index') }}" class="btn btn-sm text-white border-white border-2" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #fbb034 0%, #ffdd00 100%);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Total événements</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ events|length }}</h2>
+                        <p class="text-white-50 mb-0" style="font-size: 0.75rem;">Éléments totaux</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-chart-line fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_event_index') }}" class="btn btn-sm text-white border-white border-2" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cartes statistiques Tickets -->
+<div class="row mb-4">
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Total tickets vendus</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ total_tickets|default(0) }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-ticket-alt fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_ticket_index') }}" class="btn btn-sm text-white border-white border-2" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Tickets vendus aujourd'hui</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ tickets_today|default(0) }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-calendar-day fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_ticket_index') }}" class="btn btn-sm text-white border-white border-2" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-sm-6 mb-4">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #fbb034 0%, #ffdd00 100%);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Revenus totaux</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ (total_revenue|default(0))|number_format(0, ',', ' ') }} €</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-euro-sign fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_ticket_index') }}" class="btn btn-sm text-white border-white border-2" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tableau -->
+<div class="card mt-4">
+    <div class="card-body">
+        <h4 class="card-title">Liste des événements</h4>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Dates</th>
+                        <th>Lieu</th>
+                        <th>Type</th>
+                        <th>Statut</th>
+                        <th>Capacité</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <td><strong>{{ event.title }}</strong></td>
+                        <td>{{ event.startDate|date('d/m/Y H:i') }} → {{ event.endDate|date('d/m/Y H:i') }}</td>
+                        <td>{{ event.location }}</td>
+                        <td><span class="badge bg-black text-white" style="background-color: black !important;">{{ event.type }}</span></td>
+                        <td>
+                            {% if event.startDate > date() %}
+                                <span class="badge bg-black text-white" style="background-color: black !important;">À venir</span>
+                            {% elseif event.endDate >= date() %}
+                                <span class="badge bg-black text-white" style="background-color: black !important;">En cours</span>
+                            {% else %}
+                                <span class="badge bg-black text-white" style="background-color: black !important;">Terminé</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ event.capacity }}</td>
+                        <td>
+                            <a href="{{ path('app_event_show', {id: event.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                            <a href="{{ path('app_event_edit', {id: event.id}) }}" class="btn btn-sm btn-warning">Éditer</a>
+                            {{ include('event/_delete_form.html.twig') }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="7" class="text-center text-muted">Aucun événement</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 </div>
 {% endblock %}
-
-
-

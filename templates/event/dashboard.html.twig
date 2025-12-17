@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block body %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Tableau de bord</h1>
+    
+    <!-- Cartes de statistiques -->
+    <div class="row mt-4">
+        <!-- Statistiques des événements -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+                <div class="card-body text-white d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                        <div>
+                            <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Événements à venir</h6>
+                            <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ eventStats.upcoming }}</h2>
+                        </div>
+                        <div>
+                            <i class="fas fa-calendar fa-3x text-white" style="opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                    <a href="{{ path('app_event_index') }}" class="btn btn-sm text-white border-white border-2 mt-auto" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                        Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+                <div class="card-body text-white d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                        <div>
+                            <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Événements en cours</h6>
+                            <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ eventStats.ongoing }}</h2>
+                        </div>
+                        <div>
+                            <i class="fas fa-play-circle fa-3x text-white" style="opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                    <a href="{{ path('app_event_index') }}" class="btn btn-sm text-white border-white border-2 mt-auto" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                        Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+                <div class="card-body text-white d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                        <div>
+                            <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Billets vendus aujourd'hui</h6>
+                            <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ ticketStats.today }}</h2>
+                        </div>
+                        <div>
+                            <i class="fas fa-ticket-alt fa-3x text-white" style="opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                    <a href="{{ path('app_ticket_index') }}" class="btn btn-sm text-white border-white border-2 mt-auto" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                        Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+                <div class="card-body text-white d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                        <div>
+                            <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Revenus totaux</h6>
+                            <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ ticketStats.revenue|number_format(2, ',', ' ') }} €</h2>
+                        </div>
+                        <div>
+                            <i class="fas fa-euro-sign fa-3x text-white" style="opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                    <a href="{{ path('app_ticket_index') }}" class="btn btn-sm text-white border-white border-2 mt-auto" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                        Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des événements -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Derniers événements</h6>
+            <a href="{{ path('app_event_index') }}" class="btn btn-sm btn-primary">Voir tout</a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Date</th>
+                            <th>Lieu</th>
+                            <th>Statut</th>
+                            <th>Places restantes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events|slice(0, 5) %}
+                            <tr>
+                                <td>{{ event.title }}</td>
+                                <td>{{ event.startDate|date('d/m/Y H:i') }}</td>
+                                <td>{{ event.location }}</td>
+                                <td>
+                                    {% if event.startDate > now %}
+                                        <span class="badge badge-primary">À venir</span>
+                                    {% elseif event.endDate >= now %}
+                                        <span class="badge badge-success">En cours</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">Terminé</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ event.capacity - event.ticketsSold }} / {{ event.capacity }}</td>
+                                <td>
+                                    <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Aucun événement trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

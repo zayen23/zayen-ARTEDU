@@ -23,10 +23,43 @@
     </div>
     
     <div class="header-right">
-        <button class="add-btn" onclick="window.location.href='{{ path('app_sponsor_new') }}'">
-            <i class="fas fa-plus"></i>
-            <span>Add New Sponsor</span>
-        </button>
+        {% set current_route = app.request.attributes.get('_route') %}
+        {% if current_route starts with 'app_event' or current_route == 'app_event_dashboard' %}
+            <button class="add-btn" onclick="window.location.href='{{ path('app_event_new') }}'">
+                <i class="fas fa-plus"></i>
+                <span>Add Event</span>
+            </button>
+        {% elseif current_route starts with 'app_ticket' or current_route == 'app_ventes' %}
+            <button class="add-btn" onclick="window.location.href='{{ path('app_ticket_new') }}'">
+                <i class="fas fa-plus"></i>
+                <span>Add Ticket</span>
+            </button>
+        {% elseif current_route starts with 'app_sponsor_contract' %}
+            <button class="add-btn" onclick="window.location.href='{{ path('app_sponsor_contract_new') }}'">
+                <i class="fas fa-plus"></i>
+                <span>Add Contract</span>
+            </button>
+        {% elseif current_route starts with 'app_sponsorship' %}
+            <button class="add-btn" onclick="window.location.href='{{ path('app_sponsorship_new') }}'">
+                <i class="fas fa-plus"></i>
+                <span>Add Sponsorship</span>
+            </button>
+        {% elseif current_route starts with 'app_sponsor' or current_route == 'app_sponsoring' %}
+            <button class="add-btn" onclick="window.location.href='{{ path('app_sponsor_new') }}'">
+                <i class="fas fa-plus"></i>
+                <span>Add Sponsor</span>
+            </button>
+        {% elseif current_route starts with 'app_event_review' %}
+            <button class="add-btn" onclick="window.location.href='{{ path('app_event_review_new') }}'">
+                <i class="fas fa-plus"></i>
+                <span>Add Review</span>
+            </button>
+        {% else %}
+            <button class="add-btn" onclick="window.location.href='{{ path('app_sponsor_new') }}'">
+                <i class="fas fa-plus"></i>
+                <span>Add New</span>
+            </button>
+        {% endif %}
         <div class="user-icon">
             <i class="fas fa-user"></i>
         </div>

@@ -12,18 +12,15 @@ use Symfony\Component\Routing\Attribute\Route;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(
-        SponsorRepository $sponsorRepository,
-        SponsorContractRepository $contractRepository,
-        SponsorshipRepository $sponsorshipRepository
-    ): Response {
+    public function index(): Response
+    {
+        // Pour l'instant, on utilise des valeurs par défaut pour les utilisateurs
+        // Ces valeurs seront remplacées quand l'entité User sera créée
         return $this->render('home/index.html.twig', [
-            'sponsors_count' => $sponsorRepository->count([]),
-            'contracts_count' => $contractRepository->count([]),
-            'sponsorships_count' => $sponsorshipRepository->count([]),
-            'recent_sponsors' => $sponsorRepository->findBy([], ['id' => 'DESC'], 5),
-            'recent_contracts' => $contractRepository->findRecentWithSponsor(5),
-            'recent_sponsorships' => $sponsorshipRepository->findRecentWithSponsor(5),
+            'clients_count' => 1,
+            'vendeurs_count' => 0,
+            'admins_count' => 0,
+            'total_users' => 1,
         ]);
     }
 }

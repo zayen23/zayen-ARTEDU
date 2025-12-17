@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Ventes - ARTEDU{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-shopping-cart"></i>
+                Gestion des Ventes
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Ventes</li>
+                </ol>
+            </nav>
+        </div>
+        <a href="{{ path('app_ticket_new') }}" class="btn btn-add">
+            <i class="fas fa-plus me-2"></i>Créer un nouveau ticket
+        </a>
+    </div>
+</div>
+
+<!-- Cartes Statistiques -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Total tickets</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ tickets_count|default(0) }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-ticket-alt fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_ticket_index') }}" class="btn btn-sm text-white border-white border-2 mt-auto" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Tickets aujourd'hui</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ tickets_today|default(0) }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-calendar-day fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_ticket_index') }}" class="btn btn-sm text-white border-white border-2 mt-auto" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Revenus totaux</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ (total_revenue|default(0))|number_format(0, ',', ' ') }} €</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-euro-sign fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_ticket_index') }}" class="btn btn-sm text-white border-white border-2 mt-auto" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Revenus aujourd'hui</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ (revenue_today|default(0))|number_format(0, ',', ' ') }} €</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-money-bill-wave fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_ticket_index') }}" class="btn btn-sm text-white border-white border-2 mt-auto" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Derniers billets vendus -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow mb-4" style="border-radius: 12px; border: none;">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center" style="background: white; border-bottom: 2px solid #e3e6f0; border-radius: 12px 12px 0 0;">
+                <h6 class="m-0 font-weight-bold" style="color: #5a5c69;">
+                    <i class="fas fa-ticket-alt me-2" style="color: #667eea;"></i>Derniers billets vendus
+                </h6>
+                <a href="{{ path('app_ticket_index') }}" class="btn btn-sm btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                    Voir tout
+                </a>
+            </div>
+            <div class="card-body" style="padding: 0;">
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0" width="100%" cellspacing="0" style="border-collapse: collapse;">
+                        <thead>
+                            <tr style="background-color: #f8f9fc;">
+                                <th style="padding: 12px; border: 1px solid #e3e6f0; font-weight: 600; color: #5a5c69; font-size: 0.875rem;">Événement</th>
+                                <th style="padding: 12px; border: 1px solid #e3e6f0; font-weight: 600; color: #5a5c69; font-size: 0.875rem;">Acheteur</th>
+                                <th style="padding: 12px; border: 1px solid #e3e6f0; font-weight: 600; color: #5a5c69; font-size: 0.875rem;">Date d'achat</th>
+                                <th style="padding: 12px; border: 1px solid #e3e6f0; font-weight: 600; color: #5a5c69; font-size: 0.875rem;">Prix</th>
+                                <th style="padding: 12px; border: 1px solid #e3e6f0; font-weight: 600; color: #5a5c69; font-size: 0.875rem;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if recent_tickets|length > 0 %}
+                                {% for ticket in recent_tickets|slice(0, 5) %}
+                                    <tr style="transition: background-color 0.2s;">
+                                        <td style="padding: 12px; border: 1px solid #e3e6f0; color: #858796;">
+                                            {% if ticket.event %}
+                                                {{ ticket.event.title }}
+                                            {% else %}
+                                                <span class="text-muted">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                        <td style="padding: 12px; border: 1px solid #e3e6f0; color: #858796;">{{ ticket.buyerName }}</td>
+                                        <td style="padding: 12px; border: 1px solid #e3e6f0; color: #858796;">{{ ticket.issuedAt ? ticket.issuedAt|date('d/m/Y H:i') : 'N/A' }}</td>
+                                        <td style="padding: 12px; border: 1px solid #e3e6f0; color: #858796;">{{ ticket.price ? ticket.price|number_format(2, ',', ' ') ~ ' €' : 'Gratuit' }}</td>
+                                        <td style="padding: 12px; border: 1px solid #e3e6f0;">
+                                            <a href="{{ path('app_ticket_show', {'id': ticket.id}) }}" class="btn btn-sm btn-info" style="background: #36b9cc; border: none;">
+                                                Voir
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center" style="padding: 2rem; border: 1px solid #e3e6f0; color: #858796;">
+                                        Aucun billet trouvé
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

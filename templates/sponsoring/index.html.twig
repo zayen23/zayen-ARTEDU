@@ -1,94 +1,211 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Sponsoring - Actions Rapides{% endblock %}
+{% block title %}Tableau de bord - Sponsoring{% endblock %}
 
 {% block body %}
 <div class="page-header">
-    <h1>
-        <i class="fas fa-handshake"></i>
-        Sponsoring
-    </h1>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Sponsoring</li>
-        </ol>
-    </nav>
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-chart-line"></i>
+                Tableau de bord
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active">Accueil</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
 </div>
 
-<div class="data-table-container" style="text-align: center; padding: 60px 40px;">
-    <h2 style="font-size: 28px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">Actions rapides</h2>
-    <p style="font-size: 16px; color: #64748b; margin-bottom: 40px;">Créez rapidement de nouveaux éléments</p>
-    
-    <div style="max-width: 900px; margin: 0 auto;">
-        <!-- Première ligne : Créer un Sponsor et Créer un Contrat -->
-        <div style="display: flex; justify-content: center; gap: 24px; margin-bottom: 24px; flex-wrap: wrap;">
-            <!-- Bouton Créer un Sponsor (Bleu) -->
-            <a href="{{ path('app_sponsor_new') }}" style="
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 20px 32px;
-                background: #3b82f6;
-                color: white;
-                text-decoration: none;
-                border-radius: 12px;
-                font-size: 16px;
-                font-weight: 600;
-                transition: all 0.3s;
-                box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
-                min-width: 220px;
-            " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 12px rgba(59, 130, 246, 0.4)';" 
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(59, 130, 246, 0.3)';">
-                <i class="fas fa-user-plus" style="font-size: 20px;"></i>
-                <span>Créer un Sponsor</span>
-            </a>
-
-            <!-- Bouton Créer un Contrat (Vert) -->
-            <a href="{{ path('app_sponsor_contract_new') }}" style="
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 20px 32px;
-                background: #10b981;
-                color: white;
-                text-decoration: none;
-                border-radius: 12px;
-                font-size: 16px;
-                font-weight: 600;
-                transition: all 0.3s;
-                box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
-                min-width: 220px;
-            " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 12px rgba(16, 185, 129, 0.4)';" 
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(16, 185, 129, 0.3)';">
-                <i class="fas fa-file-contract" style="font-size: 20px;"></i>
-                <span>Créer un Contrat</span>
-            </a>
+<!-- Stats Section -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Sponsors</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ sponsors_count }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-handshake fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_sponsor_index') }}" class="btn btn-sm text-white border-white border-2 mt-auto" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
         </div>
+    </div>
 
-        <!-- Deuxième ligne : Créer un Parrainage (centré) -->
-        <div style="display: flex; justify-content: center;">
-            <a href="{{ path('app_sponsorship_new') }}" style="
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 20px 32px;
-                background: #06b6d4;
-                color: #1e293b;
-                text-decoration: none;
-                border-radius: 12px;
-                font-size: 16px;
-                font-weight: 600;
-                transition: all 0.3s;
-                box-shadow: 0 4px 6px rgba(6, 182, 212, 0.3);
-                min-width: 220px;
-            " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 12px rgba(6, 182, 212, 0.4)';" 
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(6, 182, 212, 0.3)';">
-                <i class="fas fa-gift" style="font-size: 20px;"></i>
-                <span>Créer un Parrainage</span>
-            </a>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Contrats</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ contracts_count }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-file-contract fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_sponsor_contract_index') }}" class="btn btn-sm text-white border-white border-2 mt-auto" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Parrainages</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ sponsorships_count }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-gift fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <a href="{{ path('app_sponsorship_index') }}" class="btn btn-sm text-white border-white border-2 mt-auto" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">Total</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ sponsors_count + contracts_count + sponsorships_count }}</h2>
+                        <div class="text-white-50 small mt-2">
+                            <i class="fas fa-list"></i> Éléments totaux
+                        </div>
+                    </div>
+                    <div>
+                        <i class="fas fa-chart-line fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Items Cards -->
+<div class="row">
+    <div class="col-xl-4 mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px 12px 0 0;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-handshake me-2"></i>
+                    <strong>Derniers Sponsors</strong>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if recent_sponsors|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for sponsor in recent_sponsors %}
+                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ sponsor.name }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ sponsor.email }}</small>
+                                </div>
+                                <a href="{{ path('app_sponsor_show', {'id': sponsor.id}) }}" class="btn btn-sm" style="background: #667eea; color: white; border: none;">
+                                    Voir
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">Aucun sponsor</p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ path('app_sponsor_index') }}" class="btn w-100 text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        Voir tous les sponsors
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 12px 12px 0 0;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-file-contract me-2"></i>
+                    <strong>Derniers Contrats</strong>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if recent_contracts|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for contract in recent_contracts %}
+                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ contract.contractNumber }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ contract.sponsor.name }}</small>
+                                </div>
+                                <a href="{{ path('app_sponsor_contract_show', {'id': contract.id}) }}" class="btn btn-sm" style="background: #11998e; color: white; border: none;">
+                                    Voir
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">Aucun contrat</p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ path('app_sponsor_contract_index') }}" class="btn w-100 text-white" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                        Voir tous les contrats
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%); border-radius: 12px 12px 0 0;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-gift me-2"></i>
+                    <strong>Derniers Parrainages</strong>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if recent_sponsorships|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for sponsorship in recent_sponsorships %}
+                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ sponsorship.sponsor.name }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ sponsorship.amount|number_format(2, ',', ' ') }} €</small>
+                                </div>
+                                <a href="{{ path('app_sponsorship_show', {'id': sponsorship.id}) }}" class="btn btn-sm" style="background: #00c9ff; color: white; border: none;">
+                                    Voir
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">Aucun parrainage</p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ path('app_sponsorship_index') }}" class="btn w-100 text-white" style="background: linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%);">
+                        Voir tous les parrainages
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

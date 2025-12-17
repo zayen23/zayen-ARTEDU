@@ -3,8 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Sponsor;
+use App\Entity\Event;
 use App\Enum\TypeSponsorEnum;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -12,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -85,6 +90,22 @@ class SponsorType extends AbstractType
                     TypeSponsorEnum::INSTITUTION => 'Institution',
                 },
             ])
+            ->add('sponsorType', ChoiceType::class, [
+                'label' => 'Type de sponsorisation',
+                'required' => true,
+                'mapped' => false,
+                'choices' => [
+                    'Sponsor de plateforme' => 'platform',
+                    'Sponsor pour événement' => 'event',
+                ],
+                'attr' => [
+                    'class' => 'form-select',
+                    'id' => 'sponsor_type_choice',
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Le type de sponsorisation est obligatoire']),
+                ],
+            ])
             ->add('logoFile', FileType::class, [
                 'label' => 'Logo',
                 'required' => false,
@@ -117,6 +138,73 @@ class SponsorType extends AbstractType
                 ],
             ])
         ;
+
+        // Ajouter le champ événement de manière dynamique
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $form = $event->getForm();
+            $sponsor = $event->getData();
+            
+            // Déterminer si c'est un sponsor d'événement existant
+            $isEventSponsor = $sponsor && $sponsor->getId() && !$sponsor->getEvents()->isEmpty();
+            $selectedEvent = null;
+            if ($isEventSponsor) {
+                $selectedEvent = $sponsor->getEvents()->first();
+            }
+            
+            $form->add('event', EntityType::class, [
+                'class' => Event::class,
+                'label' => 'Événement',
+                'required' => false,
+                'mapped' => false,
+                'choice_label' => 'title',
+                'placeholder' => 'Sélectionner un événement',
+                'data' => $selectedEvent,
+                'query_builder' => function ($er) {
+                    return $er->createQueryBuilder('e')
+                        ->orderBy('e.title', 'ASC');
+                },
+                'attr' => [
+                    'class' => 'form-select',
+                    'id' => 'sponsor_event_select',
+                    'style' => $isEventSponsor ? '' : 'display: none;',
+                ],
+            ]);
+            
+            // Pré-remplir le type de sponsorisation
+            if ($isEventSponsor) {
+                $form->get('sponsorType')->setData('event');
+            } else {
+                $form->get('sponsorType')->setData('platform');
+            }
+        });
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+            $data = $event->getData();
+            $form = $event->getForm();
+            
+            // Si le type de sponsorisation est "event", rendre l'événement obligatoire
+            if (isset($data['sponsorType']) && $data['sponsorType'] === 'event') {
+                $form->add('event', EntityType::class, [
+                    'class' => Event::class,
+                    'label' => 'Événement',
+                    'required' => true,
+                    'mapped' => false,
+                    'choice_label' => 'title',
+                    'placeholder' => 'Sélectionner un événement',
+                    'query_builder' => function ($er) {
+                        return $er->createQueryBuilder('e')
+                            ->orderBy('e.title', 'ASC');
+                    },
+                    'attr' => [
+                        'class' => 'form-select',
+                        'id' => 'sponsor_event_select',
+                    ],
+                    'constraints' => [
+                        new Assert\NotBlank(['message' => 'Veuillez sélectionner un événement']),
+                    ],
+                ]);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

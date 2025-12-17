@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Sponsor;
+use App\Entity\Event;
 use App\Form\SponsorType;
 use App\Form\SponsorSearchType;
 use App\Repository\SponsorRepository;
@@ -46,6 +47,15 @@ final class SponsorController extends AbstractController
                 $sponsor->setLogo($logoFilename);
             }
 
+            // Gestion du type de sponsorisation
+            $sponsorType = $form->get('sponsorType')->getData();
+            if ($sponsorType === 'event') {
+                $event = $form->get('event')->getData();
+                if ($event instanceof Event) {
+                    $sponsor->addEvent($event);
+                }
+            }
+
             $entityManager->persist($sponsor);
             $entityManager->flush();
 
@@ -84,6 +94,21 @@ final class SponsorController extends AbstractController
                 }
                 $logoFilename = $fileUploader->upload($logoFile, 'sponsor_logo');
                 $sponsor->setLogo($logoFilename);
+            }
+
+            // Gestion du type de sponsorisation
+            $sponsorType = $form->get('sponsorType')->getData();
+            
+            // Retirer tous les événements existants
+            foreach ($sponsor->getEvents() as $event) {
+                $sponsor->removeEvent($event);
+            }
+            
+            if ($sponsorType === 'event') {
+                $event = $form->get('event')->getData();
+                if ($event instanceof Event) {
+                    $sponsor->addEvent($event);
+                }
             }
 
             $entityManager->flush();

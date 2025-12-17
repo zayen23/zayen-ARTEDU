@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Commentaires{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-star"></i>
+                Gestion des Commentaires
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Commentaires</li>
+                </ol>
+            </nav>
+        </div>
+        <a href="{{ path('app_event_review_new') }}" class="btn btn-add">
+            <i class="fas fa-plus me-2"></i>Nouveau commentaire
+        </a>
+    </div>
+</div>
+
+<div class="stat-card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>CreatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event_review in event_reviews %}
+            <tr>
+                <td>{{ event_review.id }}</td>
+                <td>{{ event_review.rating }}</td>
+                <td>{{ event_review.comment }}</td>
+                <td>{{ event_review.createdAt ? event_review.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_event_review_show', {'id': event_review.id}) }}">show</a>
+                    <a href="{{ path('app_event_review_edit', {'id': event_review.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+

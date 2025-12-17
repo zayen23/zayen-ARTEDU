@@ -1,199 +1,248 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tableau de bord - ARTEDU{% endblock %}
+{% block title %}Gestion des Utilisateurs - ARTEDU{% endblock %}
 
 {% block body %}
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Tableau de bord</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">Accueil</li>
-    </ol>
-
-    <!-- Stats Section -->
-    <div id="stats" class="row mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="small">Sponsors</div>
-                            <div class="h2">{{ sponsors_count }}</div>
-                        </div>
-                        <div><i class="fas fa-handshake fa-2x"></i></div>
-                    </div>
-                </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{{ path('app_sponsor_index') }}">Voir détails</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-users"></i>
+                Gestion des Utilisateurs
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Utilisateurs</li>
+                </ol>
+            </nav>
         </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="small">Contrats</div>
-                            <div class="h2">{{ contracts_count }}</div>
-                        </div>
-                        <div><i class="fas fa-file-contract fa-2x"></i></div>
-                    </div>
-                </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{{ path('app_sponsor_contract_index') }}">Voir détails</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-info text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="small">Parrainages</div>
-                            <div class="h2">{{ sponsorships_count }}</div>
-                        </div>
-                        <div><i class="fas fa-gift fa-2x"></i></div>
-                    </div>
-                </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{{ path('app_sponsorship_index') }}">Voir détails</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="small">Total</div>
-                            <div class="h2">{{ sponsors_count + contracts_count + sponsorships_count }}</div>
-                        </div>
-                        <div><i class="fas fa-chart-line fa-2x"></i></div>
-                    </div>
-                </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <span class="small text-white">Éléments totaux</span>
-                    <div class="small text-white"><i class="fas fa-chart-bar"></i></div>
-                </div>
-            </div>
-        </div>
+        <a href="#" class="btn btn-add">
+            <i class="fas fa-plus me-2"></i>+ Add New User
+        </a>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-xl-4 mb-4">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <i class="fas fa-handshake me-1"></i>
-                    Derniers Sponsors
-                </div>
-                <div class="card-body">
-                    {% if recent_sponsors|length > 0 %}
-                        <ul class="list-group list-group-flush">
-                            {% for sponsor in recent_sponsors %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>{{ sponsor.name }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ sponsor.email }}</small>
-                                    </div>
-                                    <a href="{{ path('app_sponsor_show', {'id': sponsor.id}) }}" class="btn btn-sm btn-outline-primary">Voir</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-muted mb-0">Aucun sponsor</p>
-                    {% endif %}
-                    <div class="mt-3">
-                        <a href="{{ path('app_sponsor_index') }}" class="btn btn-primary btn-sm w-100">Voir tous les sponsors</a>
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">CLIENTS</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ clients_count|default(0) }}</h2>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-4 mb-4">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <i class="fas fa-file-contract me-1"></i>
-                    Derniers Contrats
-                </div>
-                <div class="card-body">
-                    {% if recent_contracts|length > 0 %}
-                        <ul class="list-group list-group-flush">
-                            {% for contract in recent_contracts %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>{{ contract.contractNumber }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ contract.sponsor.name }}</small>
-                                    </div>
-                                    <a href="{{ path('app_sponsor_contract_show', {'id': contract.id}) }}" class="btn btn-sm btn-outline-success">Voir</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-muted mb-0">Aucun contrat</p>
-                    {% endif %}
-                    <div class="mt-3">
-                        <a href="{{ path('app_sponsor_contract_index') }}" class="btn btn-success btn-sm w-100">Voir tous les contrats</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-4 mb-4">
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <i class="fas fa-gift me-1"></i>
-                    Derniers Parrainages
-                </div>
-                <div class="card-body">
-                    {% if recent_sponsorships|length > 0 %}
-                        <ul class="list-group list-group-flush">
-                            {% for sponsorship in recent_sponsorships %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>{{ sponsorship.sponsor.name }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ sponsorship.amount|number_format(2, ',', ' ') }} €</small>
-                                    </div>
-                                    <a href="{{ path('app_sponsorship_show', {'id': sponsorship.id}) }}" class="btn btn-sm btn-outline-info">Voir</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-muted mb-0">Aucun parrainage</p>
-                    {% endif %}
-                    <div class="mt-3">
-                        <a href="{{ path('app_sponsorship_index') }}" class="btn btn-info btn-sm w-100">Voir tous les parrainages</a>
+                    <div>
+                        <i class="fas fa-users fa-3x text-white" style="opacity: 0.3;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body text-center p-5">
-                    <h3 class="fw-bold mb-3">Actions rapides</h3>
-                    <p class="text-muted mb-4">Créez rapidement de nouveaux éléments</p>
-                    <div class="d-flex flex-wrap justify-content-center gap-3">
-                        <a href="{{ path('app_sponsor_new') }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-user-plus"></i> Créer un Sponsor
-                        </a>
-                        <a href="{{ path('app_sponsor_contract_new') }}" class="btn btn-success btn-lg">
-                            <i class="fas fa-file-contract"></i> Créer un Contrat
-                        </a>
-                        <a href="{{ path('app_sponsorship_new') }}" class="btn btn-info btn-lg">
-                            <i class="fas fa-gift"></i> Créer un Parrainage
-                        </a>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">VENDEURS</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ vendeurs_count|default(0) }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-store fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">ADMINISTRATEURS</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ admins_count|default(0) }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-user-shield fa-3x text-white" style="opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 180px;">
+            <div class="card-body text-white d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-grow-1">
+                    <div>
+                        <h6 class="text-white-50 mb-1" style="font-size: 0.875rem; font-weight: 500;">TOTAL UTILISATEURS</h6>
+                        <h2 class="mb-0 text-white" style="font-size: 2.5rem; font-weight: 700;">{{ total_users|default(0) }}</h2>
+                    </div>
+                    <div>
+                        <i class="fas fa-chart-line fa-3x text-white" style="opacity: 0.3;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<div class="row">
+    <!-- Left Navigation Panel -->
+    <div class="col-xl-3 col-lg-4 mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item list-group-item-action active" id="filterAll" onclick="filterUsers('all'); return false;">
+                        <i class="fas fa-users me-2"></i>
+                        Tous les utilisateurs
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" id="filterClients" onclick="filterUsers('clients'); return false;">
+                        <i class="fas fa-user me-2"></i>
+                        Clients
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" id="filterVendeurs" onclick="filterUsers('vendeurs'); return false;">
+                        <i class="fas fa-store me-2"></i>
+                        Vendeurs
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" id="filterAdmins" onclick="filterUsers('admins'); return false;">
+                        <i class="fas fa-user-shield me-2"></i>
+                        Administrateurs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="col-xl-9 col-lg-8">
+        <!-- Search and Filter Section -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Rechercher par nom, email..." onkeyup="filterTable()">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="statusFilter" onchange="filterTable()">
+                            <option value="">Tous les statuts</option>
+                            <option value="actif">Actif</option>
+                            <option value="inactif">Inactif</option>
+                            <option value="en_attente">En attente</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-secondary w-100" onclick="resetFilters()">
+                            <i class="fas fa-redo"></i> Réinitialiser
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Type</th>
+                                <th>Statut</th>
+                                <th>Date de création</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">
+                                    <i class="fas fa-users fa-3x mb-3 d-block" style="opacity: 0.3;"></i>
+                                    <p>Aucun utilisateur trouvé</p>
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-plus"></i> Créer un utilisateur
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.list-group-item.active {
+    background-color: #7c3aed !important;
+    border-color: #7c3aed !important;
+    color: white !important;
+}
+
+.list-group-item.active i {
+    color: white !important;
+}
+
+.list-group-item {
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 12px 16px;
+    font-weight: 500;
+}
+
+.list-group-item:first-child {
+    border-top: none;
+}
+
+.list-group-item:hover:not(.active) {
+    background-color: #f8f9fa;
+}
+
+.list-group-item i {
+    width: 20px;
+    text-align: center;
+    margin-right: 8px;
+    color: #6b7280;
+}
+</style>
+
+<script>
+function filterUsers(type) {
+    document.querySelectorAll('.list-group-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    event.target.closest('.list-group-item').classList.add('active');
+    console.log('Filter by:', type);
+}
+
+function filterTable() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const table = document.getElementById('usersTableBody');
+    const rows = table.getElementsByTagName('tr');
+    
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchInput) ? '' : 'none';
+    }
+}
+
+function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('statusFilter').value = '';
+    filterTable();
+}
+</script>
 {% endblock %}
