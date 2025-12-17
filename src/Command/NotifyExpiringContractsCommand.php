@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:notify-expiring-contracts',
-    description: 'Envoie des notifications email et SMS aux administrateurs pour les contrats qui expirent bientôt.'
+    description: 'Envoie des notifications email aux administrateurs pour les contrats qui expirent bientôt.'
 )]
 class NotifyExpiringContractsCommand extends Command
 {
@@ -38,10 +38,43 @@ class NotifyExpiringContractsCommand extends Command
 
         $io->title('Vérification des contrats expirant bientôt');
 
+        // Afficher les dates de recherche pour débogage
+        $now = new \DateTime('today');
+        $limit = (new \DateTime('today'))->modify("+$days days")->setTime(23, 59, 59);
+        $io->note(sprintf(
+            'Recherche des contrats expirant entre %s et %s',
+            $now->format('d/m/Y H:i:s'),
+            $limit->format('d/m/Y H:i:s')
+        ));
+
         $contracts = $this->contractRepository->findExpiringWithinDays($days);
 
         if (\count($contracts) === 0) {
-            $io->success(sprintf('Aucun contrat n\'expire dans les %d prochains jours.', $days));
+            $io->warning(sprintf('Aucun contrat n\'expire dans les %d prochains jours.', $days));
+            
+            // Afficher tous les contrats pour débogage
+            $allContracts = $this->contractRepository->findAllWithSponsor();
+            if (\count($allContracts) > 0) {
+                $io->section('Contrats existants dans la base de données:');
+                $debugRows = [];
+                foreach ($allContracts as $contract) {
+                    $expiresAt = $contract->getExpiresAt();
+                    $daysUntilExpiry = $now->diff($expiresAt)->days;
+                    $debugRows[] = [
+                        $contract->getContractNumber(),
+                        $contract->getSponsor()?->getName() ?? 'N/A',
+                        $expiresAt->format('d/m/Y'),
+                        $daysUntilExpiry . ' jours',
+                    ];
+                }
+                $io->table(
+                    ['N° Contrat', 'Sponsor', 'Date expiration', 'Jours restants'],
+                    $debugRows
+                );
+            } else {
+                $io->note('Aucun contrat trouvé dans la base de données.');
+            }
+            
             return Command::SUCCESS;
         }
 

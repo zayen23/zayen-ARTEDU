@@ -1,72 +1,67 @@
-<nav class="sb-sidenav accordion sb-sidenav-dark modern-sidenav" id="layoutSidenav_nav">
-    <div class="sb-sidenav-menu">
-        <div class="nav">
-            <!-- Brand/Title -->
-            <div class="sb-sidenav-menu-heading d-flex align-items-center justify-content-between px-3 py-3">
-                <span class="text-white fw-bold">ArtEdu</span>
-                <button class="btn btn-link text-white p-0" id="sidebarToggle" style="font-size: 1.2rem;">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-
-            <!-- Accueil -->
-            <a class="nav-link" href="{{ path('app_home') }}">
-                <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
-                Accueil
+<nav class="modern-sidebar">
+    <div class="sidebar-section">
+        <div class="section-title">CORE</div>
+        <div class="nav-item">
+            <a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" href="{{ path('app_home') }}">
+                <i class="fas fa-home"></i>
+                <span>Accueil</span>
             </a>
-
-            <!-- Section MANAGEMENT -->
-            <div class="sb-sidenav-menu-heading">MANAGEMENT</div>
-
-            <!-- Vente -->
-            <a class="nav-link" href="javascript:void(0);">
-                <div class="sb-nav-link-icon"><i class="fas fa-shopping-cart"></i></div>
-                Vente
-            </a>
-
-            <!-- Users -->
-            <a class="nav-link" href="javascript:void(0);">
-                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                Users
-            </a>
-
-            <!-- Evenement -->
-            <a class="nav-link" href="{{ path('app_event_index') }}">
-                <div class="sb-nav-link-icon"><i class="fas fa-calendar"></i></div>
-                Événements
-            </a>
-
-            <!-- Sponsoring avec sous-menu -->
-            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSponsoring" aria-expanded="false" aria-controls="collapseSponsoring">
-                <div class="sb-nav-link-icon"><i class="fas fa-handshake"></i></div>
-                Sponsoring
-                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-            </a>
-            <div class="collapse" id="collapseSponsoring" aria-labelledby="headingOne" data-bs-parent="#layoutSidenav_nav">
-                <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link" href="{{ path('app_sponsor_index') }}">
-                        <i class="fas fa-user-tie me-2"></i>Sponsors
-                    </a>
-                    <a class="nav-link" href="{{ path('app_sponsor_contract_index') }}">
-                        <i class="fas fa-file-contract me-2"></i>Contrats
-                    </a>
-                    <a class="nav-link" href="{{ path('app_sponsorship_index') }}">
-                        <i class="fas fa-gift me-2"></i>Parrainages
-                    </a>
-                </nav>
-            </div>
-
-            <!-- Reclamation -->
-            <a class="nav-link" href="javascript:void(0);">
-                <div class="sb-nav-link-icon"><i class="fas fa-exclamation-circle"></i></div>
-                Reclamation
-            </a>
-
         </div>
     </div>
 
-    <div class="sb-sidenav-footer modern-footer">
-        <div class="small">Connecté en tant que:</div>
-        <span class="user-name">{% if app.user %}{{ app.user.fullname ?? app.user.email }}{% else %}Invité{% endif %}</span>
+    <div class="sidebar-section">
+        <div class="section-title">MANAGEMENT</div>
+        
+        <div class="nav-item">
+            <a class="nav-link" href="javascript:void(0);">
+                <i class="fas fa-users"></i>
+                <span>Utilisateurs</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a class="nav-link {% if app.request.attributes.get('_route') starts with 'app_event' %}active{% endif %}" href="{{ path('app_event_index') }}">
+                <i class="fas fa-calendar"></i>
+                <span>Événements</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a class="nav-link" href="javascript:void(0);">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Ventes</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a class="nav-link toggle-sponsoring {% if app.request.attributes.get('_route') starts with 'app_sponsoring' or app.request.attributes.get('_route') starts with 'app_sponsor' or app.request.attributes.get('_route') starts with 'app_sponsor_contract' or app.request.attributes.get('_route') starts with 'app_sponsorship' %}active{% endif %}" href="javascript:void(0);" id="sponsoringToggle">
+                <i class="fas fa-handshake"></i>
+                <span>Sponsoring</span>
+                <i class="fas fa-chevron-down ms-auto toggle-icon" style="font-size: 12px; transition: transform 0.3s;"></i>
+            </a>
+            <!-- Actions rapides sous Sponsoring -->
+            <div class="sidebar-quick-actions" id="sponsoringActions" style="display: none;">
+                <a href="{{ path('app_sponsor_new') }}" class="quick-action-btn btn-sponsor">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Créer un Sponsor</span>
+                </a>
+                <a href="{{ path('app_sponsor_contract_new') }}" class="quick-action-btn btn-contract">
+                    <i class="fas fa-file-contract"></i>
+                    <span>Créer un Contrat</span>
+                </a>
+                <a href="{{ path('app_sponsorship_new') }}" class="quick-action-btn btn-sponsorship">
+                    <i class="fas fa-gift"></i>
+                    <span>Créer un Parrainage</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="nav-item">
+            <a class="nav-link" href="javascript:void(0);">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Réclamations</span>
+                <span class="badge">0</span>
+            </a>
+        </div>
     </div>
 </nav>

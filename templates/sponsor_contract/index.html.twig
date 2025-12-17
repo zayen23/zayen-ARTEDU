@@ -44,6 +44,9 @@
                         <td>{{ sponsor_contract.sponsor.name }}</td>
                         <td class="text-end">
                             <a href="{{ path('app_sponsor_contract_show', {'id': sponsor_contract.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                            <a href="{{ path('app_sponsor_contract_pdf', {'id': sponsor_contract.id}) }}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-file-pdf"></i> PDF
+                            </a>
                             <a href="{{ path('app_sponsor_contract_edit', {'id': sponsor_contract.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
                         </td>
                     </tr>

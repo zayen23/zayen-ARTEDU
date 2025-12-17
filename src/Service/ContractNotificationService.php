@@ -6,18 +6,13 @@ use App\Entity\SponsorContract;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Notifier\Notification\Notification;
-use Symfony\Component\Notifier\NotifierInterface;
-use Symfony\Component\Notifier\Recipient\Recipient;
 
 class ContractNotificationService
 {
     public function __construct(
         private readonly MailerInterface $mailer,
-        private readonly NotifierInterface $notifier,
         private readonly LoggerInterface $logger,
         private readonly string $adminEmail,
-        private readonly ?string $adminPhone,
         private readonly ?string $adminName = 'Administrateur',
     ) {
     }
@@ -39,11 +34,6 @@ class ContractNotificationService
         
         // Envoyer l'email
         $this->sendEmail($emailContent, $days);
-
-        // Envoyer le SMS si le numéro est configuré (non vide)
-        if ($this->adminPhone && $this->adminPhone !== '') {
-            $this->sendSms($contracts, $days);
-        }
 
         // Logger l'action
         $this->logger->info(sprintf(
@@ -126,38 +116,30 @@ class ContractNotificationService
     }
 
     /**
-     * Envoie un SMS de notification.
+     * Teste l'envoi d'un email (méthode publique pour les tests).
      */
-    private function sendSms(array $contracts, int $days): void
+    public function testEmail(): void
     {
+        $testContent = "Bonjour {$this->adminName},\n\n";
+        $testContent .= "Ceci est un email de test pour vérifier la configuration de l'envoi d'emails.\n\n";
+        $testContent .= "Si vous recevez cet email, la configuration est correcte.\n\n";
+        $testContent .= "Cordialement,\nSystème ARTEDU";
+
         try {
-            $contractsCount = \count($contracts);
-            $message = sprintf(
-                'ARTEDU: %d contrat(s) expirent dans %d jour(s). Contrats: %s',
-                $contractsCount,
-                $days,
-                implode(', ', array_map(fn($c) => $c->getContractNumber(), $contracts))
-            );
+            $email = (new Email())
+                ->from('no-reply@artedu.com')
+                ->to($this->adminEmail)
+                ->subject('🧪 Test de configuration email - ARTEDU')
+                ->text($testContent)
+                ->html($this->buildHtmlEmail($testContent));
 
-            // Limiter à 160 caractères pour SMS
-            if (\strlen($message) > 160) {
-                $message = sprintf(
-                    'ARTEDU: %d contrat(s) expirent dans %d jour(s). Vérifiez votre email.',
-                    $contractsCount,
-                    $days
-                );
-            }
-
-            $notification = (new Notification($message, ['sms/vonage']))
-                ->importance(Notification::IMPORTANCE_HIGH);
-
-            $this->notifier->send($notification, new Recipient($this->adminPhone));
-            
-            $this->logger->info(sprintf('SMS de notification envoyé à %s', $this->adminPhone));
+            $this->mailer->send($email);
+            $this->logger->info(sprintf('Email de test envoyé avec succès à %s', $this->adminEmail));
         } catch (\Exception $e) {
-            $this->logger->error('Erreur lors de l\'envoi du SMS: ' . $e->getMessage());
-            // Ne pas bloquer si le SMS échoue, l'email est déjà envoyé
+            $this->logger->error('Erreur lors de l\'envoi de l\'email de test: ' . $e->getMessage());
+            throw $e;
         }
     }
+
 }
 
